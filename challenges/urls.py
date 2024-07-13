@@ -6,7 +6,6 @@ urlpatterns = [
     path('create/', views.create_challenge, name='create_challenge'),
     path('assign/', views.assign_challenge, name='assign_challenge'),
     path('list/', views.list_challenges, name='list_challenges'),
-    path('details/<int:id>/', views.challenge_details, name='challenge_details'),
     path('accept/<int:broker_id>/', views.accept_challenge, name='accept_challenge'),
     
     # URLs para desafios

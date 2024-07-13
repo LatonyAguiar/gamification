@@ -8,6 +8,7 @@ class HomeView(TemplateView):
 
 
 def login_view(request):
+    '''Faz a altenticação'''
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
         if form.is_valid():

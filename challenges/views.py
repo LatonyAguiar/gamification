@@ -1,17 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import ChallengeForm, BrokerForm
+from .forms import ChallengeForm, BrokerForm, UserForm
 from django.contrib.auth.decorators import login_required
 from .models import Challenge, Broker, ChallengeAssignment
 from django.contrib import messages
 from django.contrib.auth.models import User
-from .forms import UserForm
 
 @login_required
 def home(request):
+    """Renderiza a página inicial."""
     return render(request, 'challenges/home.html')
 
 @login_required
 def create_challenge(request):
+    """Cria um novo desafio."""
     if request.method == 'POST':
         form = ChallengeForm(request.POST, request.FILES)
         if form.is_valid():
@@ -23,6 +24,7 @@ def create_challenge(request):
 
 @login_required
 def edit_challenge(request, id):
+    """Edita um desafio existente."""
     challenge = get_object_or_404(Challenge, id=id)
     if request.method == 'POST':
         form = ChallengeForm(request.POST, request.FILES, instance=challenge)
@@ -36,6 +38,7 @@ def edit_challenge(request, id):
 
 @login_required
 def delete_challenge(request, id):
+    """Exclui um desafio."""
     challenge = get_object_or_404(Challenge, id=id)
     if request.method == 'POST':
         challenge.delete()
@@ -45,6 +48,7 @@ def delete_challenge(request, id):
 
 @login_required
 def assign_challenge(request):
+    """Atribui um desafio a um corretor."""
     if request.method == 'POST':
         challenge_id = request.POST.get('challenge')
         broker_cpf = request.POST.get('broker_cpf')
@@ -68,9 +72,9 @@ def assign_challenge(request):
     brokers = Broker.objects.all()
     return render(request, 'challenges/assign_challenge.html', {'challenges': challenges, 'brokers': brokers})
 
-
 @login_required
 def view_assigned_challenges(request, broker_id):
+    """Exibe os desafios atribuídos a um corretor específico."""
     broker = get_object_or_404(Broker, id=broker_id)
     assigned_challenges = Challenge.objects.filter(challengeassignment__broker=broker)
 
@@ -78,15 +82,13 @@ def view_assigned_challenges(request, broker_id):
 
 @login_required
 def list_challenges(request):
+    """Lista todos os desafios."""
     challenges = Challenge.objects.all()
     return render(request, 'challenges/list/list_challenges.html', {'challenges': challenges})
 
 @login_required
-def challenge_details(request, id):
-    return render(request, 'challenges/challenge_details.html')
-
-@login_required
 def accept_challenge(request, broker_id):
+    """Aceita ou rejeita um desafio por parte de um corretor."""
     broker = get_object_or_404(Broker, id=broker_id)
     
     if request.method == 'POST':
@@ -112,11 +114,12 @@ def accept_challenge(request, broker_id):
         else:
             messages.error(request, 'ID do desafio não foi fornecido.')
 
-    # Renderize o template com o formulário de aceitação
+    # Renderiza o template com o formulário de aceitação
     return render(request, 'challenges/accept_challenge.html', {'broker': broker})
 
 @login_required
 def create_broker(request):
+    """Cria um novo corretor."""
     if request.method == 'POST':
         form = BrokerForm(request.POST)
         if form.is_valid():
@@ -129,6 +132,7 @@ def create_broker(request):
 
 @login_required
 def list_brokers(request):
+    """Lista todos os corretores e seus desafios atribuídos."""
     brokers = Broker.objects.all()
 
     for broker in brokers:
@@ -139,6 +143,7 @@ def list_brokers(request):
 
 @login_required
 def edit_broker(request, id):
+    """Edita um corretor existente."""
     broker = get_object_or_404(Broker, id=id)
     if request.method == 'POST':
         form = BrokerForm(request.POST, instance=broker)
@@ -152,6 +157,7 @@ def edit_broker(request, id):
 
 @login_required
 def delete_broker(request, id):
+    """Exclui um corretor."""
     broker = get_object_or_404(Broker, id=id)
     if request.method == 'POST':
         broker.delete()
@@ -161,6 +167,7 @@ def delete_broker(request, id):
 
 @login_required
 def create_user(request):
+    """Cria um novo usuário."""
     if request.method == 'POST':
         form = UserForm(request.POST)
         if form.is_valid():
@@ -177,11 +184,13 @@ def create_user(request):
 
 @login_required
 def list_users(request):
+    """Lista todos os usuários."""
     users = User.objects.all()
     return render(request, 'challenges/list/list_users.html', {'users': users})
 
 @login_required
 def edit_user(request, id):
+    """Edita um usuário existente."""
     user = get_object_or_404(User, id=id)
     if request.method == 'POST':
         form = UserForm(request.POST, instance=user)
@@ -195,79 +204,10 @@ def edit_user(request, id):
 
 @login_required
 def delete_user(request, id):
+    """Exclui um usuário."""
     user = get_object_or_404(User, id=id)
     if request.method == 'POST':
         user.delete()
         messages.success(request, 'Usuário excluído com sucesso.')
         return redirect('list_users')
     return render(request, 'challenges/delet/delete_user.html', {'user': user})
-
-@login_required
-def accept_challenge(request, broker_id):
-    broker = get_object_or_404(Broker, id=broker_id)
-    assigned_challenges = ChallengeAssignment.objects.filter(broker=broker, accepted=False)
-    print('==>>> Broker:', broker)
-    print('==>>> Broker ID:', broker_id)
-
-    if request.method == 'POST':
-        print('999', request.POST)  # Verifica se está recebendo os dados corretamente
-        challenge_id = request.POST.get('challenge_id')
-        action = request.POST.get('action')  # Captura o valor do botão pressionado
-        print('ANTES')
-        if challenge_id and action in ['accept', 'reject']:  # Verifica se o desafio ID e a ação são válidos
-            try:
-                print('Try-->')
-                challenge = Challenge.objects.get(id=int(challenge_id))
-                print('Try-->2')
-
-                # Verifica se já existe uma atribuição desse desafio para esse corretor
-                assignment = ChallengeAssignment.objects.filter(
-                    challenge=challenge,
-                    broker=broker
-                ).first()
-                if not assignment:
-                    messages.error(request, 'Atribuição de desafio não encontrada.')
-                    return redirect('list_brokers')
-
-                print('Try-->3')
-                if action == 'accept':
-                    print('Aceitando desafio...')
-                    assignment.accepted = True  # Marca o desafio como aceito
-                    assignment.save()
-                    print('Assignment salvo como aceito.')
-
-                    # Marca o corretor como tendo desafio aceito
-                    broker.accepted_challenge = True
-                    broker.save()
-                    print('Broker salvo com desafio aceito.')
-
-                    messages.success(request, 'Você aceitou o desafio.')
-                elif action == 'reject':
-                    print('Rejeitando desafio...')
-                    # Marca o corretor como não tendo desafio aceito
-                    broker.accepted_challenge = False
-                    broker.save()
-                    print('Broker salvo com desafio rejeitado.')
-
-                    messages.warning(request, 'Você rejeitou o desafio.')
-
-                return redirect('list_brokers')
-
-            except Challenge.DoesNotExist:
-                messages.error(request, 'O desafio selecionado não existe.')
-                print('Desafio não existe. Challenge ID:', challenge_id)
-
-        else:
-            messages.error(request, 'Ação inválida.')
-            print('Ação inválida ou ID de desafio ausente. Challenge ID:', challenge_id, 'Action:', action)
-
-        return redirect('list_brokers')
-
-    context = {
-        'broker': broker,
-        'assigned_challenges': assigned_challenges,
-    }
-    return render(request, 'challenges/accept_challenge.html', context)
-
-
-
