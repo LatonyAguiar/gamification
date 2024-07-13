@@ -1,0 +1,43 @@
+{% extends "challenges/base.html" %}
+
+{% block title %}Cadastrar Corretor - Gamification Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4 mt-">Cadastrar Corretor</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <label for="{{ form.username.id_for_label }}">Nome de Usuário:</label>
+                <div class="form-group">
+                    {{ form.username }}
+                    <div class="invalid-feedback">
+                        {{ form.username.errors }}
+                    </div>
+                </div>
+
+                <label for="{{ form.cpf.id_for_label }}">CPF:</label>
+                <div class="form-group">
+                    {{ form.cpf }}
+                    <div class="invalid-feedback">
+                        {{ form.cpf.errors }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block mt-3">Salvar</button>
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    form textarea, form input[type="text"], form input[type="number"] {
+        width: calc(100% - 2px);
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+</style>
+{% endblock %}

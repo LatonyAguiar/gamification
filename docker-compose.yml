@@ -1,0 +1,34 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: gamification
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    entrypoint: /code/docker-entrypoint.sh python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db  # Nome do serviço do banco de dados no Docker Compose
+      DB_PORT: 5432
+      DB_PASSWORD: password
+      WEB_USER: admin
+      WEB_EMAIL: admin@example.com
+      WEB_PASSWORD: admin123
+    depends_on:
+      - db
+
+
+volumes:
+  postgres_data:

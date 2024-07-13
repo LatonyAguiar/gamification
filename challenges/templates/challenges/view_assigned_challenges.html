@@ -1,0 +1,39 @@
+{% extends "challenges/base.html" %}
+
+{% block title %}Desafios Atribuídos - Gamification Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Desafios Atribuídos a {{ broker.user.username }}</h1>
+    {% if assigned_challenges %}
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Nome do Desafio</th>
+                    <th>Descrição</th>
+                    <th>Regras do Desafio</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for challenge in assigned_challenges %}
+                <tr>
+                    <td>{{ challenge.id }}</td>
+                    <td>{{ challenge.name }}</td>
+                    <td>{{ challenge.description }}</td>
+                    <td>{{ challenge.scoring_rules }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3">Nenhum desafio atribuído a este corretor.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p>Nenhum desafio atribuído a este corretor.</p>
+    {% endif %}
+</div>
+{% endblock %}

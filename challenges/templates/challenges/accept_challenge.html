@@ -1,0 +1,28 @@
+{% extends "challenges/base.html" %}
+
+{% block title %}Aceitar Desafio - Gamification Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Aceitar Desafio</h1>
+    <p>Você está prestes a aceitar um desafio atribuído a {{ broker.user.username }}.</p>
+    
+    {% if assigned_challenges %}
+        {% for assignment in assigned_challenges %}
+            <div class="challenge">
+                <p>Desafio: {{ assignment.challenge.name }}</p>
+                <form method="post" action="{% url 'accept_challenge' broker_id=broker.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="challenge_id" value="{{ assignment.challenge.id }}">
+                    <button type="submit" name="action" value="accept" class="btn btn-success">Aceitar Desafio</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-danger">Recusar Desafio</button>
+                </form>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Não há desafios atribuídos.</p>
+    {% endif %}
+    
+    <a href="{% url 'list_brokers' %}" class="btn btn-secondary mt-2">Voltar para Lista de Corretores</a>
+</div>
+{% endblock %}

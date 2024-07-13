@@ -1,0 +1,14 @@
+{% extends "challenges/base.html" %}
+{% block title %}Excluir Usuário - Gamification Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Excluir Usuário</h1>
+    <p>Tem certeza que deseja excluir o usuário "{{ user.username }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+        <a href="{% url 'list_users' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

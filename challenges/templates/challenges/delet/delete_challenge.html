@@ -1,0 +1,14 @@
+{% extends "challenges/base.html" %}
+{% block title %}Excluir Desafio - Gamification Portal{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Excluir Desafio</h1>
+    <p>Tem certeza que deseja excluir o desafio "{{ challenge.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+        <a href="{% url 'list_challenges' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'challenges/base.html' %}
+{% block content %}
+  <h2>Cadastrar Desafio</h2>
+  <form method="post" enctype="multipart/form-data" style="max-width: 400px; margin: 0 auto;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+  </form>
+  <style>
+    form p {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+    form label {
+      margin-bottom: 5px;
+    }
+    form textarea, form input[type="text"], form input[type="number"] {
+      width: calc(100% - 2px);
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    form textarea {
+      height: 80px;
+      resize: vertical;
+      transition: height 0.3s;
+    }
+    form button {
+      margin-top: 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "challenges/base.html" %}
+{% block title %}Criar Usuário - Gamification Portal{% endblock %}
+
+{% block content %}
+    <div class="container-sm">
+        <h1 class="text-center mb-4">Criar Novo Usuário</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block mt-3">Salvar</button>
+        </form>
+    </div>
+
+    <style>
+        .container-sm {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        form textarea, form input[type="text"], form input[type="password"], form input[type="email"] {
+            width: 100%;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            display: block;
+        }
+        button[type="submit"] {
+            width: 100%;
+        }
+    </style>
+{% endblock %}
